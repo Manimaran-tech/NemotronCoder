@@ -1,0 +1,9 @@
+playwright
+playwright-stealth
+ollama
+openai
+python-dotenv
+fastapi
+uvicorn
+psutil
+jinja2

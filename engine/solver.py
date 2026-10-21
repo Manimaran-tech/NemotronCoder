@@ -1,5 +1,5 @@
 """
-NemotronCoder: Autonomous Coding Agent
+CodingPortal Auto-Solver
 Automates solving CodingPortal coding problems using Playwright + Local Llama (Ollama).
 
 Usage:
@@ -22,9 +22,9 @@ from openai import OpenAI
 from playwright.async_api import async_playwright, Page, Browser
 
 from config import (
-    PORTAL_USERNAME,
-    PORTAL_PASSWORD,
-    PORTAL_LOGIN_URL,
+    SKILLRACK_USERNAME,
+    SKILLRACK_PASSWORD,
+    SKILLRACK_LOGIN_URL,
     OLLAMA_MODEL,
     USE_GEMINI,
     GEMINI_API_KEY,
@@ -209,11 +209,11 @@ async def scrape_problem(page: Page) -> dict:
                     has_ace = true;
                     let val = '';
                     try { val = ace.edit(el).getValue(); } catch(e) {}
-                    if (!el.id) el.id = 'editor_gap_ace_' + Math.floor(Math.random()*1000000);
+                    if (!el.id) el.id = 'codingportal_gap_ace_' + Math.floor(Math.random()*1000000);
                     gaps.push({ id: el.id, content: val, is_input: false, size: 0 });
                     layout.push({ type: 'gap', index: gap_count++, id: el.id, content: val, is_input: false, size: 0 });
                 } else if (el.tagName.toLowerCase() === 'input' || el.tagName.toLowerCase() === 'textarea') {
-                    if (!el.id) el.id = 'editor_gap_input_' + Math.floor(Math.random()*1000000);
+                    if (!el.id) el.id = 'codingportal_gap_input_' + Math.floor(Math.random()*1000000);
                     let size_attr = parseInt(el.getAttribute('size') || '30');
                     gaps.push({ id: el.id, class: el.className || '', content: el.value, is_input: true, size: size_attr });
                     layout.push({ type: 'gap', index: gap_count++, id: el.id, class: el.className || '', content: el.value, is_input: true, size: size_attr });
@@ -555,40 +555,40 @@ def get_solution(problem_info: dict, previous_code: str = None, error_message: s
                         time.sleep(wait_secs)
                     else:
                         raise  # Re-raise for outer handler
-        elif USE_NEBIUS and NEBIUS_API_KEY:
-            model_to_use = FAST_MODEL if retry_count == 0 else THINKING_MODEL
-            print(f"[*] Sending problem to Nebius Token Factory (NVIDIA {model_to_use})...")
-            client = OpenAI(
-                base_url=NEBIUS_BASE_URL,
-                api_key=NEBIUS_API_KEY
-            )
-            response = client.chat.completions.create(
-                model=model_to_use,
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": prompt}
-                ],
-                temperature=temp,
-                max_tokens=8192,
-            )
-            solution = response.choices[0].message.content.strip()
-        elif active_nvidia:
-            model_to_use = FAST_MODEL if retry_count == 0 else THINKING_MODEL
-            print(f"[*] Sending problem to NVIDIA NIM ({model_to_use})...")
-            client = OpenAI(
-                base_url="https://integrate.api.nvidia.com/v1",
-                api_key=NVIDIA_API_KEY
-            )
-            response = client.chat.completions.create(
-                model=model_to_use,
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": prompt}
-                ],
-                temperature=temp,
-                max_tokens=8192,
-            )
-            solution = response.choices[0].message.content.strip()
+        elif (USE_NEBIUS and NEBIUS_API_KEY) or active_nvidia:
+            try:
+                base_url = NEBIUS_BASE_URL if (USE_NEBIUS and NEBIUS_API_KEY) else "https://integrate.api.nvidia.com/v1"
+                api_key = NEBIUS_API_KEY if (USE_NEBIUS and NEBIUS_API_KEY) else NVIDIA_API_KEY
+                target_service = "Nebius Token Factory" if (USE_NEBIUS and NEBIUS_API_KEY) else "NVIDIA NIM"
+                model_to_use = FAST_MODEL if retry_count == 0 else THINKING_MODEL
+                print(f"[*] Sending problem to {target_service} (NVIDIA {model_to_use})...")
+                client = OpenAI(base_url=base_url, api_key=api_key)
+                response = client.chat.completions.create(
+                    model=model_to_use,
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": prompt}
+                    ],
+                    temperature=temp,
+                    max_tokens=8192,
+                )
+                solution = response.choices[0].message.content.strip()
+            except Exception as nim_err:
+                print(f"[!] Primary inference error: {nim_err}. Gracefully falling back to Gemini...")
+                client = OpenAI(
+                    base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
+                    api_key=GEMINI_API_KEY
+                )
+                response = client.chat.completions.create(
+                    model=GEMINI_MODEL,
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": prompt}
+                    ],
+                    temperature=temp,
+                    max_tokens=8192,
+                )
+                solution = response.choices[0].message.content.strip()
         else:
             print(f"[*] Sending problem to local Ollama ({OLLAMA_MODEL})...")
             response = ollama.chat(

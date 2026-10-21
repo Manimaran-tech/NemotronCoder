@@ -10,7 +10,7 @@
 
 ---
 
-## 🌟 Overview
+## Overview
 
 **NemotronCoder** is an autonomous, vision-augmented coding agent engineered to interact directly with live web coding environments and programming benchmarks. Powered by **NVIDIA Nemotron** models running on **Nebius Token Factory**, NemotronCoder navigates browser-based code sandboxes, interprets visual and textual problem constraints, writes algorithmic solutions, and continuously self-heals compiler diagnostics in a closed execution feedback loop.
 
@@ -46,18 +46,18 @@
 
 ---
 
-## 🚀 Key Features
+## Key Features
 
-* **⚡ Accelerated via Nebius Token Factory:** Leverages Nebius's high-throughput serverless endpoints (`api.tokenfactory.nebius.com`) to deliver rapid inference and minimal latency during iterative code generation.
-* **🧠 NVIDIA Nemotron Reasoning:** Uses `nvidia/nemotron-3-super-120b-a12b` and `nvidia/Nemotron-3_5-Lightning` for multi-step algorithmic reasoning, edge-case anticipation, and code generation across C, C++, Python, and Java.
-* **👁️ Multimodal & Visual Understanding:** Automatically captures and analyzes visual challenge checkpoints and math verification prompts using multimodal vision models.
-* **🔄 Closed-Loop Self-Healing:** When compiler or test failures occur, the agent scrapes the diagnostic traceback, updates its memory context, dynamically escalates temperature, and re-synthesizes bug fixes until test cases pass.
-* **🕹️ Stealth Browser Orchestration:** Integrates Playwright with stealth patches and realistic Gaussian typing distributions, mouse jitter, and natural delays to interact authentically with complex web editors (Ace Editor).
-* **📊 Observability Dashboard:** Built-in FastAPI + SQLite web dashboard providing live telemetry on solve rate, session logs, retry counts, and system metrics.
+* **Accelerated via Nebius Token Factory:** Leverages Nebius's high-throughput serverless endpoints (`api.tokenfactory.nebius.com`) to deliver rapid inference and minimal latency during iterative code generation.
+* **NVIDIA Nemotron Reasoning:** Uses `nvidia/nemotron-3-super-120b-a12b` and `nvidia/Nemotron-3_5-Lightning` for multi-step algorithmic reasoning, edge-case anticipation, and code generation across C, C++, Python, and Java.
+* **Multimodal & Visual Understanding:** Automatically captures and analyzes visual challenge checkpoints and math verification prompts using multimodal vision models.
+* **Closed-Loop Self-Healing:** When compiler or test failures occur, the agent scrapes the diagnostic traceback, updates its memory context, dynamically escalates temperature, and re-synthesizes bug fixes until test cases pass.
+* **Stealth Browser Orchestration:** Integrates Playwright with stealth patches and realistic Gaussian typing distributions, mouse jitter, and natural delays to interact authentically with complex web editors (Ace Editor).
+* **Observability Dashboard:** Built-in FastAPI + SQLite web dashboard providing live telemetry on solve rate, session logs, retry counts, and system metrics.
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 * **Inference Platform:** [Nebius Token Factory](https://nebius.com) (`https://api.tokenfactory.nebius.com/v1/`)
 * **AI Models:** NVIDIA Nemotron Family (`nvidia/nemotron-3-super-120b-a12b`, `nvidia/Nemotron-3_5-Lightning`), NVIDIA Vision
@@ -67,7 +67,7 @@
 
 ---
 
-## 📦 Quick Start Guide
+## Quick Start Guide
 
 ### 1. Clone the Repository
 ```bash
@@ -119,7 +119,7 @@ python run_automation.py --count 5
 
 ---
 
-## 📊 Live Observability Dashboard
+## Live Observability Dashboard
 
 The dashboard provides real-time oversight over the agent's autonomous execution:
 * Real-time problem completion progress & pass/fail counts
@@ -128,6 +128,6 @@ The dashboard provides real-time oversight over the agent's autonomous execution
 
 ---
 
-## 📜 License
+## License
 
 This project is open-source under the [MIT License](LICENSE).
